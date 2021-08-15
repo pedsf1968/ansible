@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Shutdown server
+      command: /sbin/shutdown -h now
+
+    - name: Wait server go down
+      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=stopped
