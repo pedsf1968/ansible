@@ -1,0 +1,9 @@
+---
+- hosts: cluster
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Halt server
+      command: halt
+      async: 1
+      poll: 0
