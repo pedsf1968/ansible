@@ -1,0 +1,6 @@
+---
+
+# tasks file for upgrade
+- name: "Upgrade server"
+  apt:
+    upgrade=yes
