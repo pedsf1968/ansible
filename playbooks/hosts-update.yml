@@ -1,0 +1,8 @@
+---
+# Update /etc/hosts Playbook
+- name: "Update /etc/hosts"
+  hosts: cluster
+  become: yes
+  gather_facts: false
+  roles:
+    - role: "system/hosts-update"

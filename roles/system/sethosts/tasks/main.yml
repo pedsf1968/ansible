@@ -1,0 +1,6 @@
+---
+# tasks file for sethosts
+- name: "generate /etc/hosts file"
+  template: 
+    src=../templates/hosts.j2
+    dest=/etc/hosts

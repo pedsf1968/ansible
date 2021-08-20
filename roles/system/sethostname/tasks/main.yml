@@ -1,0 +1,5 @@
+---
+# tasks file for sethostname
+- name: Set a hostname
+  hostname:
+    name: "{{ inventory_hostname }}"

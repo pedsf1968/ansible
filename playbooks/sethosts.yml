@@ -1,0 +1,8 @@
+---
+# Update host name Playbook
+- name: "Update hostname"
+  hosts: cluster
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/sethosts"
