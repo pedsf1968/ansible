@@ -1,0 +1,24 @@
+---
+# CHRONY server install Playbook
+- name: "CHRONY server install"
+  hosts: haproxy
+  vars:
+    network_timezone: Europe/Paris
+    network_ip_range: 10.1.33.00/24
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/update"
+    - role: "system/upgrade"
+    - role: "system/common-packages"
+    - role: "ntp/install-ntp-server"
+
+- name: "Set NTP server for all cluster"
+  hosts: "k8s-admin,nodes" 
+  vars:
+    ntp_server_ip: k8s-haproxy
+    network_timezone: Europe/Paris
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "ntp/set-ntp-server"

@@ -1,0 +1,35 @@
+---
+# tasks file to install CHRONY NTP server
+
+- name: CHRONY package install
+  apt:
+    pkg:
+      - chrony
+    state: latest
+    update_cache: true
+
+- name: Set timezone to network_timezone
+  timezone:
+    name: "{{ network_timezone }}"
+    
+- name: CHRONY configuration
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: allow {{ network_ip_range }}
+    create: yes
+
+- name: Enable and start CHRONY daemond
+  systemd:
+    name: chrony
+    state: started
+    enabled: yes
+
+- name: Reload systemd daemond
+  systemd:
+    name: sshd
+    daemon-reload: yes
+    state: restarted
+
+- name: Disable other NTP server
+  command:
+    timedatectl set-ntp false
