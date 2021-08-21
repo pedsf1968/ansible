@@ -1,12 +1,7 @@
 ---
 # tasks file to install common debian packages
 - name: Install common packages
-  apt:
-    pkg:
-      - net-tools 
-      - telnet 
-      - python3-pip 
-      - sshpass 
-      - nfs-common
-    state: latest
+  package:
+    name: [ 'net-tools', 'telnet', 'python3-pip', 'sshpass', 'nfs-common' ]
+    state: present
     update_cache: true

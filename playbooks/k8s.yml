@@ -1,0 +1,12 @@
+---
+# Kubernetes k8s installation Playbook
+- name: "Docker install"
+  hosts: nodes
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/update"
+    - role: "system/upgrade"
+    - role: "system/common-packages"
+    - role: "k8s/docker-install"
+
