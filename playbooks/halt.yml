@@ -1,5 +1,14 @@
 ---
-- hosts: cluster
+# Halt cluster and admin server Playbook
+- name: "Halt cluster"
+  hosts: cluster
+  become: yes
+  gather_facts: false
+  roles:
+    - role: "system/halt"
+
+- name: "Halt k8s-admin"
+  hosts: k8s-admin
   become: yes
   gather_facts: false
   roles:

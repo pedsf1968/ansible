@@ -1,12 +1,28 @@
 ---
 # Kubernetes k8s installation Playbook
-- name: "Docker install"
+- name: "Docker installation"
   hosts: nodes
+  vars:
+    docker_user: ansible
   become: yes
   gather_facts: true
   roles:
     - role: "system/update"
     - role: "system/upgrade"
     - role: "system/common-packages"
-    - role: "k8s/docker-install"
+    - role: "k8s/docker-install" 
+    - role: "k8s/kubernetes-install"
+ 
+
+- name: "Ha-Proxy installation"
+  hosts: haproxy
+  vars:
+    haproxy_user_login: ansible
+    haproxy_user_password: ansible
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/update"
+    - role: "system/upgrade"
+    - role: "k8s/haproxy-install"
 

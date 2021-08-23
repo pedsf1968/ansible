@@ -1,0 +1,18 @@
+---
+# tasks file for Ha-Proxy installation
+- name: Install Ha-Proxy packages
+  package:
+    name: haproxy
+    state: latest
+
+- name: "Generate /etc/haproxy/haproxy.cfg file"
+  template: 
+    src=../templates/haproxy.j2
+    dest=/etc/haproxy/haproxy.cfg
+
+- name: Start Ha-Proxy
+  service:
+    name: haproxy
+    state: started
+    enabled: yes
+    
