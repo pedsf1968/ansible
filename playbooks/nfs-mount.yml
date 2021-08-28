@@ -1,0 +1,19 @@
+---
+# NFS drive mount Playbook
+- name: "NFS drive mount"
+  hosts: nodes
+  vars:
+    nfs_server_ip: 10.1.33.11
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/common-packages"
+    - role: "system/nfs-mount"
+      vars:
+        nfs_src_directory: /export
+        nfs_dest_directory: /mnt/network
+    - role: "system/nfs-mount"
+      vars:
+        nfs_opts: rw,sync,hard,intr,_netdev
+        nfs_src_directory: /export/shared
+        nfs_dest_directory: /mnt/network/shared

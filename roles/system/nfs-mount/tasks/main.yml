@@ -1,0 +1,9 @@
+---
+# tasks mount an NFS volume
+- name: "Mount {{nfs_src_directory}} NFS volume"
+  mount:
+    src: "{{nfs_server_ip}}:{{nfs_src_directory}}"
+    path: "{{nfs_dest_directory}}"
+    opts: "{{nfs_opts | default('ro,sync,hard,intr,_netdev') }}"
+    state: mounted
+    fstype: nfs
