@@ -1,53 +1,10 @@
 ---
 # tasks file for kubernetes installation
-- name: Remove swapfile from /etc/fstab
-  mount:
-    name: "{{ item }}"
-    fstype: swap
-    state: absent
-  with_items:
-    - swap
-    - none
 
-- name: Disable swap
-  command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-
-- name: Enable ip forwarding on IPv4 and reload if necessary
-  sysctl:
-    name: net.ipv4.ip_forward
-    value: 1
-    sysctl_set: yes
-    state: present
-    reload: yes
-
-- name: Install required packages
-  package: 
-    name: [ 'apt-transport-https', 'curl' ]
-    state: latest
-
-- name: Add Kubernetes GPG apt key
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-
-- name: Update packages
-  apt:
-    update_cache: yes
-
-- name: Add Kubernetes repository
-  apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-    filename: kubernetes
-
-- name: Update packages
-  apt:
-    update_cache: yes
 
 - name: Install Kubernetes packages
   package:
-    name: [ 'kubelet', 'kubeadm', 'kubectl' ]
+    name: [ 'kubelet', 'kubeadm' ]
     state: latest
 
 #- name: Prevent Kubernetes from being upgraded

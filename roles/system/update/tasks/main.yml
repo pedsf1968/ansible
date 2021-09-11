@@ -3,5 +3,6 @@
 # tasks file for update
 - name: "Update server"
   apt:
-    update_cache=yes
-    cache_valid_time=86400
+    upgrade: "{{ upgrade_type | default('no') }}"
+    update_cache: yes
+    cache_valid_time: 86400

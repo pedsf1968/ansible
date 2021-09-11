@@ -1,0 +1,59 @@
+---
+# tasks install NFS server
+
+- name: "Install nfs-server package"
+  package:
+    name: nfs-server
+    state: latest
+    update_cache: true
+
+- name: "Ensure {{ nfs_server_directory }} exist"
+  file:
+    path: "{{ nfs_server_directory}}"
+    state: directory
+    mode: 0777
+
+- name: "Ensure {{ nfs_server_shared }} exist"
+  file:
+    path: "{{ nfs_server_shared}}"
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: 0777
+
+- name: "Mount {{ nfs_server_dev }} on {{ nfs_server_directory}}"
+  mount:
+    path: "{{ nfs_server_directory }}"
+    src: "{{ nfs_server_dev }}"
+    opts: "{{ nfs_server_directory_opts | default('defaults') }}"
+    state: mounted
+    fstype: ext4
+
+- name: "Mount for sharing {{ nfs_server_directory }} on {{ nfs_server_shared }}"
+  mount:
+    path: "{{ nfs_server_shared }}"
+    src: "{{ nfs_server_directory }}"
+    opts: "{{ nfs_server_shared_opts | default('rw,sync,hard,intr,_netdev') }}"
+    state: mounted
+    fstype: none
+
+- name: "Sharing setup"
+  lineinfile:
+    path: /etc/exports
+    state: present
+    line: "/export	{{ nfs_network }}(rw,sync,root_squash,no_subtree_check,fsid=0)"
+
+- lineinfile:
+    path: /etc/exports
+    state: present
+    line: "/export/shared	{{ nfs_network }}(rw,sync,all_squash,no_subtree_check)"
+
+- name: "Restart NFS service"
+  systemd:
+    name: nfs-server
+    daemon-reload: yes
+    state: started
+
+- name: "Re-export shared drive"
+  command: 
+    exportfs -rav

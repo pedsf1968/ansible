@@ -1,0 +1,37 @@
+---
+# Share drive with NFS Playbook
+
+- name: "System update and upgrade"
+  hosts:  [k8s-admin,masters]
+  vars:
+    upgrade_type: safe
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/update"
+
+- name: "NFS server install"
+  hosts: k8s-admin      
+  vars:
+    nfs_server_dev: /dev/sda3
+    nfs_server_directory: /srv
+    nfs_server_shared: /export/shared
+    nfs_server_directory_opts: defaults
+    nfs_server_shared_opts: 'rw,bind'
+    nfs_network: 10.1.33.0/24
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/nfs-server"
+
+- name: "NFS client install"
+  hosts: masters
+  vars:
+    nfs_server_ip: 10.1.33.11
+    nfs_server_shared: /export/shared
+    nfs_client_opts: rw,sync,hard,intr,_netdev
+    nfs_client_dest_directory: /mnt/network
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "system/nfs-client"

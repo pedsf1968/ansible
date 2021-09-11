@@ -1,22 +1,16 @@
 ---
 # Kubernetes k8s installation Playbook
-
-
-############################################################### COMMON PACKAGES
-- name: "Common packages installation"
+- name: "Common installation"
   hosts: none # all
-  vars:
-    upgrade_type: safe
   become: yes
   gather_facts: true
   roles:
     - role: "system/update"
+    - role: "system/upgrade"
     - role: "system/common-packages"
     - role: "rasberry/rasberry-remove-swap"
 
-
-#################################################### COMMON KUBERNETES PACKAGES
-- name: "Common kubernetes packages installation"
+- name: "Common kubernetes installation"
   hosts: none # [k8s-admin, nodes]
   vars:
     docker_user: ansible
@@ -27,9 +21,8 @@
     - role: "k8s/kubernetes-add-repository"
 
 
-###################################################################### HA-PROXY
 - name: "Ha-Proxy installation"
-  hosts: k8s-haproxy
+  hosts: none # haproxy
   vars:
     haproxy_user_login: ansible
     haproxy_user_password: ansible
@@ -39,7 +32,6 @@
     - role: "k8s/haproxy-install"
 
 
-######################################################################## DOCKER
 - name: "Docker installation"
   hosts: none # nodes
   vars:
@@ -52,9 +44,9 @@
     - role: "k8s/docker-install"
     - role: "k8s/kubernetes-network" 
 
-####################################################################### MASTERS
-- name: "Masters setup"
-  hosts: k8s-master-01
+
+- name: "Control plane setup"
+  hosts: none # k8s-master-01
   vars:
     kubernetes_pod_subnet: "192.168.0.0/16"
     load_balancer_ip: 10.1.33.20
@@ -65,9 +57,8 @@
     - role: "k8s/kubernetes-masters-setup"
 
 
-####################################################################### WORKERS
 - name: "Workers setup"
-  hosts: k8s-worker-01
+  hosts: none # k8s-worker-01
   vars:
     kubernetes_pod_subnet: "192.168.0.0/16"
     load_balancer_ip: 10.1.33.20
@@ -78,7 +69,6 @@
     - role: "k8s/kubernetes-workers-setup"
 
 
-########################################################################### CLI
 - name: "CLI installation on admin server"
   hosts: none # [ k8s-master-01, k8s-admin ]
   vars:
@@ -87,4 +77,3 @@
   gather_facts: false
   roles:
     - role: "k8s/kubernetes-cli-install"
-

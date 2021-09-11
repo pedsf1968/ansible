@@ -1,0 +1,9 @@
+---
+# Add common packages for Kubernetes install
+
+- name: "Install required packages"
+  package: 
+    name: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg', 'lsb-release' ]
+    state: latest
+    update_cache: true
+

@@ -1,0 +1,19 @@
+---
+# tasks file for kubernetes-masters-setup
+- name: "Generate Kubeadm token"
+  command: kubeadm token generate
+  register: token_generation
+
+- set_fact: 
+    kubeadm_token={{ token_generation.stdout }}
+
+- debug:
+    msg: "Kubeadm token: {{ kubeadm_token }}"
+
+- name: "Generate /home/ansible/kubeadm-config.yml file"
+  template: 
+    src=../templates/kubeadm-config.j2
+    dest=kubeadm-config.yml
+
+- name: "Start first master node"
+  command: kubeadm init --config=kubeadm-config.yml
