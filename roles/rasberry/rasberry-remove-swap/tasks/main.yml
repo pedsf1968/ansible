@@ -1,6 +1,6 @@
 ---
-
 # tasks file to remove swap on Rasberry Pi
+
 - name: "Remove swapfile from /etc/fstab"
   mount:
     name: "{{ item }}"
@@ -9,10 +9,6 @@
   with_items:
     - swap
     - none
-
-- name: "Swap desactivation"
-  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
-  ignore_errors: True
 
 - name: "Disable swap"
   command: swapoff -a

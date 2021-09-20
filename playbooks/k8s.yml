@@ -1,7 +1,6 @@
 ---
 # Kubernetes k8s installation Playbook
 
-
 ############################################################### COMMON PACKAGES
 - name: "Common packages installation"
   hosts: none # all
@@ -15,76 +14,75 @@
     - role: "rasberry/rasberry-remove-swap"
 
 
-#################################################### COMMON KUBERNETES PACKAGES
-- name: "Common kubernetes packages installation"
-  hosts: none # [k8s-admin, nodes]
-  vars:
-    docker_user: ansible
-  become: yes
-  gather_facts: true
-  roles:
-    - role: "k8s/kubernetes-common-packages"
-    - role: "k8s/kubernetes-add-repository"
-
-
 ###################################################################### HA-PROXY
 - name: "Ha-Proxy installation"
   hosts: k8s-haproxy
-  vars:
-    haproxy_user_login: ansible
-    haproxy_user_password: ansible
   become: yes
   gather_facts: true
   roles:
-    - role: "k8s/haproxy-install"
+    - role: "k8s/k8s-haproxy-install"
 
 
 ######################################################################## DOCKER
 - name: "Docker installation"
-  hosts: none # nodes
+  hosts: nodes
   vars:
-    docker_user: ansible
     cmdline_path: /boot/firmware/cmdline.txt
   become: yes
   gather_facts: true
   roles:
     - role: "rasberry/rasberry-set-cgroup"
-    - role: "k8s/docker-install"
-    - role: "k8s/kubernetes-network" 
+    - role: "k8s/k8s-docker-install"
+    - role: "k8s/k8s-bridge-configuration" 
 
-####################################################################### MASTERS
-- name: "Masters setup"
+
+##################################################### NODES KUBERNETES PACKAGES
+- name: "Nodes Kubernetes packages installation"
+  hosts: nodes
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "k8s/k8s-add-kubernetes-repository"
+    - role: "k8s/k8s-common-packages"
+    - role: "k8s/k8s-nodes-packages"
+
+
+################################################################### MASTER INIT
+- name: "First Master setup"
   hosts: k8s-master-01
-  vars:
-    kubernetes_pod_subnet: "192.168.0.0/16"
-    load_balancer_ip: 10.1.33.20
-    load_balancer_port: 6443
   become: yes
   gather_facts: false
   roles:
-    - role: "k8s/kubernetes-masters-setup"
+    - role: "k8s/k8s-init-master"
+    - role: "k8s/k8s-calico-install"
 
 
-####################################################################### WORKERS
-- name: "Workers setup"
-  hosts: k8s-worker-01
-  vars:
-    kubernetes_pod_subnet: "192.168.0.0/16"
-    load_balancer_ip: 10.1.33.20
-    load_balancer_port: 6443
+################################################################## MASTERS JOIN
+- name: "Masters join first Master"
+  hosts: [k8s-master-02, k8s-master-03]
   become: yes
   gather_facts: false
   roles:
-    - role: "k8s/kubernetes-workers-setup"
+    - role: "k8s/k8s-join-masters"
+
+
+################################################################## WORKERS JOIN
+- name: "Workers join firs Master"
+  hosts: [workers]
+  become: yes
+  gather_facts: false
+  roles:
+    - role: "k8s/k8s-join-workers"
 
 
 ########################################################################### CLI
 - name: "CLI installation on admin server"
-  hosts: none # [ k8s-master-01, k8s-admin ]
-  vars:
-    kube_host_src: k8s-master-01
-    kubernetes_host_cli: k8s-admin
+  hosts: k8s-admin
+  become: yes
   gather_facts: false
   roles:
-    - role: "k8s/kubernetes-cli-install"
+    - role: "k8s/k8s-add-kubernetes-repository"
+    - role: "k8s/k8s-common-packages"
+    - role: "k8s/k8s-admin-packages"
+    - role: "k8s/k8s-cli-install"
 

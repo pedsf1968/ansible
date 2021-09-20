@@ -1,0 +1,30 @@
+---
+
+# Global parameters
+kubernetes_version: v1.22.1
+kubeadm_version: 1.22.1
+kubernetes_user: ansible
+
+kubernetes_cluster_label: k8s-pedsf-prod
+
+# Kubernetes admin hostname for CLI
+kubernetes_admin_dns: k8s-admin
+kubernetes_admin_ip: 10.1.33.11
+
+# Kubernetes firts master to get token and configurations
+kubernetes_first_master_dns: k8s-master-01
+
+# Docker parameters
+docker_version: 18.09.6
+docker_user: ansible
+
+# Load balancer parameters
+kubernetes_loadbalanced_dns: k8s-haproxy
+kubernetes_loadbalancer_ip: 10.1.33.20
+kubernetes_loadbalancer_api_port: 6443
+kubernetes_loadbalancer_http_port: 80
+kubernetes_loadbalancer_https_port: 443
+kubernetes_loadbalancer_ssh_port: 2222
+
+# Network Calico parameters 
+kubernetes_pod_subnet: "192.168.0.0/16"

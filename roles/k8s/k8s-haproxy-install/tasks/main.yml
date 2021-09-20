@@ -1,0 +1,47 @@
+---
+# tasks file for Ha-Proxy installation
+
+- name: "Install rsyslog service"
+  package:
+    name: rsyslog
+    state: latest
+
+- name: "Generate /etc/rsyslog.d/haproxy.conf file"
+  template:
+    src: ../templates/haproxy-rsyslog.j2
+    dest: /etc/rsyslog.d/haproxy.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Install Ha-Proxy packages"
+  package:
+    name: haproxy
+    state: latest
+
+- name: "Restart rsyslog service"
+  service:
+    name: rsyslog
+    state: restarted
+    enabled: yes
+
+- name: "Stop haproxy service"
+  service:
+    name: haproxy
+    state: stopped
+
+- name: "Generate /etc/haproxy/haproxy.cfg file"
+  template: 
+    src: ../templates/haproxy-configuration.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: "Start Ha-Proxy"
+  service:
+    name: haproxy
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    

@@ -1,0 +1,8 @@
+---
+
+# Ha-Proxy parameters
+haproxy_user_login: ansible
+haproxy_user_password: ansible
+
+kubernetes_loadbalancer_stats_port: 9000
+kubernetes_loadbalancer_stats_endpoint: /stats
