@@ -3,7 +3,7 @@
 
 ############################################################### COMMON PACKAGES
 - name: "Common packages installation"
-  hosts: none # all
+  hosts: all
   vars:
     upgrade_type: safe
   become: yes
@@ -47,13 +47,22 @@
     - role: "k8s/k8s-nodes-packages"
 
 
+#################################################################### ETCD SETUP
+- name: "ETCD setup"
+  hosts: [masters]
+  become: yes
+  gather_facts: false
+  roles:
+    - role: "k8s/k8s-etcd-install"
+
+
 ################################################################### MASTER INIT
 - name: "First Master setup"
   hosts: k8s-master-01
   become: yes
   gather_facts: false
   roles:
-    - role: "k8s/k8s-init-master"
+    - role: "k8s/k8s-master-init"
     - role: "k8s/k8s-calico-install"
 
 
@@ -63,16 +72,16 @@
   become: yes
   gather_facts: false
   roles:
-    - role: "k8s/k8s-join-masters"
+    - role: "k8s/k8s-masters-join"
 
 
 ################################################################## WORKERS JOIN
-- name: "Workers join firs Master"
+- name: "Workers join first Master"
   hosts: [workers]
   become: yes
   gather_facts: false
   roles:
-    - role: "k8s/k8s-join-workers"
+    - role: "k8s/k8s-workers-join"
 
 
 ########################################################################### CLI
@@ -85,4 +94,5 @@
     - role: "k8s/k8s-common-packages"
     - role: "k8s/k8s-admin-packages"
     - role: "k8s/k8s-cli-install"
+#    - role: "k8s/k8s-k9s-install"
 

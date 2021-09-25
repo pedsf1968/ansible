@@ -22,7 +22,3 @@
 - name: Join Master replicas to cluster
   shell: "{{ kubeadm_join }}"
 
-- pause:
-    prompt: "Wait for containers to Pull and install"
-
-

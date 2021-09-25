@@ -1,5 +1,5 @@
 ---
-# Add Kubernetes repository and update packages
+# Install tools to manage k8s cluster
 
 - name: "Install Kubernetes cli packages"
   package:
@@ -22,3 +22,13 @@
     group: "{{ kubernetes_user }}" 
     remote_src: yes
     force: yes
+
+- name: "Install completion package"
+  package:
+    name: bash-completion
+    state: latest
+
+- name: "Configure completion in .bashrc"
+  lineinfile:
+    path: "/home/{{ kubernetes_user }}/.bashrc"
+    line: source <(kubectl completion bash)
