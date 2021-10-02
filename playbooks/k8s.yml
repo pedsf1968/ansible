@@ -94,5 +94,4 @@
     - role: "k8s/k8s-common-packages"
     - role: "k8s/k8s-admin-packages"
     - role: "k8s/k8s-cli-install"
-#    - role: "k8s/k8s-k9s-install"
-
+    - role: "k8s/k8s-nginx-install"
