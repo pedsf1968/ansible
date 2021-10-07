@@ -114,4 +114,20 @@
   become: yes
   become_user: "{{ kubernetes_user }}" 
 
+# Deploy the Ingress Controller as Deployment
+#- name: "Run the Ingress Controller as deployment"
+#  command: 
+#    cmd: kubectl apply -f deployment/nginx-ingress.yaml
+#    chdir: /etc/kubernetes-ingress/deployments 
+#  become: yes
+#  become_user: "{{ kubernetes_user }}" 
+
+
+#- name: "Create a Service for the Ingress Controller Pods"
+#  command:
+#    cmd: kubectl create -f service/nodeport.yaml
+#    chdir: /etc/kubernetes-ingress/deployments 
+#  become: yes
+#  become_user: "{{ kubernetes_user }}" 
+
 

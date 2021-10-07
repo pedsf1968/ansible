@@ -28,3 +28,12 @@ kubernetes_loadbalancer_ssh_port: 2222
 
 # Network Calico parameters 
 kubernetes_pod_subnet: "192.168.0.0/16"
+
+# MetalLB Cluster load balancer
+kubernetes_metallb_range: 10.1.33.100-10.1.33.110
+
+# Prometheus
+prometheus_admin_ip: 10.1.33.11
+prometheus_admin_port: 9090
+prometheus_target_port: 9100
+

@@ -1,0 +1,16 @@
+---
+# Deploy Prometheus 
+
+- name: "Deploy Prometheus on k8s-admin"
+  hosts: k8s-admin
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "prometheus/prometheus-install"
+
+- name: "Deploy Prometheus on k8s-admin"
+  hosts: cluster
+  become: yes
+  gather_facts: true
+  roles:
+    - role: "prometheus/prometheus-node-exporter"

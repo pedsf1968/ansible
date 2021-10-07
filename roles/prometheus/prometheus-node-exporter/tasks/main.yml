@@ -1,0 +1,18 @@
+---
+# tasks file for prometheus
+
+- name: "Create exporter folder"
+  file:
+    path: /etc/prometheus
+    state: directory
+
+- name: "Download and uncompress Prometheus node exporter archive"
+  unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-arm64.tar.gz    
+    dest: /etc/prometheus/
+    remote_src: yes
+
+- name: "Start exporter"
+  command:
+    cmd: ./node_exporter
+    chdir: /etc/prometheus/node_exporter-1.2.2.linux-arm64

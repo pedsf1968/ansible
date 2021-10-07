@@ -93,7 +93,6 @@ backend k8s-backend-api
 backend k8s-backend-http
    mode tcp
    option  tcplog
-   option ssl-hello-chk
    option log-health-checks
    balance roundrobin
    default-server inter 10s fall 3 rise 3

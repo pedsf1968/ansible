@@ -79,7 +79,7 @@
 - name: "Workers join first Master"
   hosts: [workers]
   become: yes
-  gather_facts: false
+  gather_facts: true
   roles:
     - role: "k8s/k8s-workers-join"
 
@@ -94,4 +94,12 @@
     - role: "k8s/k8s-common-packages"
     - role: "k8s/k8s-admin-packages"
     - role: "k8s/k8s-cli-install"
+
+######################################################### CLUSTER CONFIGURATION
+- name: "Cluster configuration"
+  hosts: k8s-admin
+  become: yes
+  gather_facts: true
+  roles:
     - role: "k8s/k8s-nginx-install"
+    - role: "k8s/k8s-metallb-install"
