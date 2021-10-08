@@ -1,12 +1,22 @@
 ---
 # tasks file for prometheus
 
+- name: "Create Prometheus folder"
+  file:
+    path: "{{ prometheus_directory }}"
+    state: directory
 
-- name: "Install Prometheus package"
-  apt:
-    name: prometheus
-    update_cache: yes
-    state: present
+- name: "Create Prometheus folder"
+  file:
+    path: /var/lib/prometheus
+    state: directory
+
+- name: "Download and uncompress Prometheus archive"
+  unarchive:
+    src: "{{ prometheus_url }}"  
+    dest: "{{ prometheus_directory }}"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
 
 - name: "Add configuration file"
   template:
@@ -15,18 +25,22 @@
     mode: 0644
     owner: root
     group: root
-  notify: restart_prometheus
 
-- name: "Start Prometheus"
+- name: "Generate prometheus.service"
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+
+- name: "Reload Prometheus service"
   service:
-    name: prometheus
-    state: started
+    name: prometheus.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
 
 #- name: "Create Prometheus group"  group:    name: prometheus    system: yes
 
 #- name: "Create Prometheus user"  user:    name: prometheus    group: prometheus    system: yes    create_home: false    comment: Prometheus user account
 
-#- name: "Create Prometheus src folder"  file:    path: /usr/src/prometheus    state: directory
 
-#- name: "Download Prometheus archive"  get_url:    url: https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-arm64.tar.gz    dest: /usr/src/prometheus    checksum: 0bf66e0ab8fcad44ee5041d7909a955017f4587868ee96b76c44c02f500d843e
 

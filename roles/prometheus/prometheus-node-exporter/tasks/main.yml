@@ -1,18 +1,26 @@
 ---
-# tasks file for prometheus
+# tasks file for Prometheus node exporter
 
 - name: "Create exporter folder"
   file:
-    path: /etc/prometheus
+    path: "{{ prometheus_directory }}/node-exporter"
     state: directory
 
 - name: "Download and uncompress Prometheus node exporter archive"
   unarchive:
-    src: https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-arm64.tar.gz    
-    dest: /etc/prometheus/
+    src: "{{ node_exporter_url }}"  
+    dest: "{{ prometheus_directory }}/node-exporter"
     remote_src: yes
+    extra_opts: [--strip-components=1]
 
-- name: "Start exporter"
-  command:
-    cmd: ./node_exporter
-    chdir: /etc/prometheus/node_exporter-1.2.2.linux-arm64
+- name: "Generate node_exporter.service"
+  template:
+    src: node-exporter.service.j2
+    dest: /etc/systemd/system/node-exporter.service
+
+- name: "Reload node exporter service"
+  service:
+    name: node-exporter.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
