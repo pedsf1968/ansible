@@ -1,7 +1,7 @@
 ---
 # Deploy Prometheus 
 
-- name: "Deploy Prometheus on k8s-admin"
+- name: "Deploy Prometheus"
   hosts: k8s-admin
   vars:
     prometheus_url: https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-arm64.tar.gz
@@ -10,7 +10,7 @@
   roles:
     - role: "prometheus/prometheus-install"
 
-- name: "Deploy Prometheus node exporter"
+- name: "Deploy Prometheus Node Exporter"
   hosts: cluster
   become: yes
   gather_facts: true
